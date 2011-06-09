@@ -14,20 +14,19 @@ class Joe
   end
 
   def start
-    puts "joe has started"
     setup_joe
-    puts "--initializing joe's directory to #{@basepath}"
-    puts "--processing pre files"
     process_pres
-    puts "--rendering posts"
     render_posts
-    puts "--generating indexes"
     generate_indexes
-    puts "--copying assets and css"
     copy_assets_and_css
-    puts "joe has finished"
   end
 
+  #initializes site paths and which 'index' files should be
+  #generated.
+  #basepath: the fileroot for joe's assets
+  #sitepath: the destination directory for the generated site
+  #indexes:  the files joe should look for in _layout for 'indexes'
+  #pres:     a 'pre' file is a 'post' before joe does his magic
   def setup_joe
     @basepath = Dir.pwd
     @sitepath = "#{@basepath}/_site"
@@ -35,6 +34,8 @@ class Joe
     @pres = Dir.glob "#{@basepath}/_posts/*.markdown"
   end
 
+  #reads in all pre files, parses their YAML header, and creates
+  #an object for each one.
   def process_pres
     @pres.each do |pre|
       p = Post.new
@@ -48,6 +49,7 @@ class Joe
     @posts.delete_if { |p| p.publish == false }
   end
 
+  #takes all of our post objects and render them to individual html docs
   def render_posts
     @posts.each do |post|
       postpath = "#{@sitepath}/#{File.dirname(post.permalink)}"
@@ -61,6 +63,7 @@ class Joe
     end
   end
 
+  #generates 'indexes' which are just the html pages where posts can be listed
   def generate_indexes
     @indexes.each do |index|
       html_out = File.open "#{@sitepath}/#{index}.html","w"
@@ -72,6 +75,8 @@ class Joe
     end
   end
 
+  #if the _style folder exists, it will tranform .scss files to css files
+  #afterward it will copy everything from _public to the site directory
   def copy_assets_and_css
     if File.exists? "#{@basepath}/_style"
       scss_list = Dir.glob("#{@basepath}/_style/*.scss")

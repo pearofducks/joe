@@ -21,12 +21,11 @@ class Joe
     copy_assets_and_css
   end
 
-  #initializes site paths and which 'index' files should be
-  #generated.
+  #initializes site paths and which indexes should be generated.
   #basepath: the fileroot for joe's assets
   #sitepath: the destination directory for the generated site
   #indexes:  the files joe should look for in _layout for 'indexes'
-  #pres:     a 'pre' file is a 'post' before joe does his magic
+  #pres:     a 'pre' file is a 'post' before joe does what he does
   def setup_joe
     @basepath = Dir.pwd
     @sitepath = "#{@basepath}/_site"
@@ -97,6 +96,10 @@ class Joe
     end
   end
 
+  #this function, along with the Post class can be edited to add/change
+  #what data a post needs to have available when rendering
+  #
+  #the permalink can also be edited in the relevant line below
   def process_header post,yaml
     post.title = yaml[:title]
     post.content = yaml[:content]
